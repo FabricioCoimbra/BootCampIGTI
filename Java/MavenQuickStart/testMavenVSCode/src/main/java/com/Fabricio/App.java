@@ -6,6 +6,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.nio.charset.Charset;
+
 import lombok.Getter;
 import lombok.Setter;
 import java.util.*;
@@ -93,11 +95,11 @@ public class App {
     }
 
     private static String autenticar() {
-        final Type TokenType = new TypeToken<TokenRetorno>() {}.getType();
+        final Type tokenType = new TypeToken<TokenRetorno>() {}.getType();
         final String inputJson = "{ \"username\":\"fabricio\", \"password\":\"dificil\" }";
         post("https://igti-film.herokuapp.com/api/signup", inputJson);
         final String token = post("https://igti-film.herokuapp.com/api/signin", inputJson);
-        final TokenRetorno retorno = gson.fromJson(token, TokenType);
+        final TokenRetorno retorno = gson.fromJson(token, tokenType);
         return retorno.getToken();
     }
 
@@ -136,14 +138,14 @@ public class App {
     }
 
     private static ArrayList<PostUser> carregarPostsDoArquivo(){
-        final Type PostUserType = new TypeToken<ArrayList<PostUser>>() {}.getType(); 
+        final Type postUserType = new TypeToken<ArrayList<PostUser>>() {}.getType(); 
         try {            
             //final String PostsJson = FileUtils.readFileToString(new File("D:/Curso Mobile IGTI/PostsUsers.json"));                       
-            final String PostsJson = FileUtils.readFileToString(new File("PostsUsers.json"));                       
-            return gson.fromJson(PostsJson, PostUserType);              
+            final String PostsJson = FileUtils.readFileToString(new File("PostsUsers.json"), Charset.defaultCharset());                       
+            return gson.fromJson(PostsJson, postUserType);              
         } catch(final IOException e){
             System.out.println(e); 
-            return new ArrayList();
+            return new ArrayList<>();
         }        
     }
 
