@@ -55,6 +55,81 @@
         console.log("x === outro");
         console.log(x === outro);
 
+
+
+        function post(url, body) {
+            xmlhttp = new XMLHttpRequest();
+            xmlhttp.open("POST", url, true);
+            xmlhttp.setRequestHeader("Content-type", "application/json");
+            xmlhttp.onreadystatechange = function () { 
+                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                    console.log("");
+                    console.log("");
+                    console.log("AUTENTICANDO ...");
+                    console.log("");
+                    console.log("POST retornou " + xmlhttp.status);
+                }
+            }
+            
+            xmlhttp.onload = function () {
+                if (this.status >= 200 && this.status < 300) {
+                    console.log("");
+                    console.log("Resposta autenticação ...");
+                    console.log("");
+                    console.log(xmlhttp.response);
+                    var obj = JSON.parse(xmlhttp.response);
+                    console.log(obj.token);
+                    console.log("");
+                    get("https://igti-film.herokuapp.com/api/films", obj.token)
+
+                } else {
+                    console.log(`ERRO onload status ${xmlhttp.status} - ${xmlhttp.statusText} body ${xmlhttp.body}`)
+                }
+            };
+
+            xmlhttp.onerror = function () {
+                console.log(`ERRO onerror status ${xmlhttp.status} - ${xmlhttp.statusText}`)
+            };
+
+            xmlhttp.send(body);
+        }
+
+        function get(url, token){
+            xmlhttp = new XMLHttpRequest();
+            xmlhttp.open("GET", url, true);
+            xmlhttp.setRequestHeader("Content-type", "application/json");
+            xmlhttp.setRequestHeader("Authorization", "Bearer " + token);
+            xmlhttp.onreadystatechange = function () { 
+                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                    console.log(`get status ${xmlhttp.status} - ${xmlhttp.statusText}`)
+                }
+            } 
+            xmlhttp.onload = function () {
+                if (this.status >= 200 && this.status < 300) {
+                    console.log("");
+                    console.log("Resposta da busca de filmes...");
+                    console.log("");
+                    console.log(xmlhttp.response);
+                } else {
+                    console.log(`ERRO get onload status ${xmlhttp.status} - ${xmlhttp.statusText} body ${xmlhttp.body}`)
+                }   
+            }
+            xmlhttp.onerror = function () {
+                console.log(`ERRO get onerror status ${xmlhttp.status} - ${xmlhttp.statusText}`)
+            }
+
+            xmlhttp.send();            
+        }
+
+        function autenticar(){            
+            let inputJson = JSON.stringify({ "username": "fabricio", "password": "dificil"});
+            console.log(inputJson);
+            //deve criar o usuário somente uma vez;
+            //post("https://igti-film.herokuapp.com/api/signup", inputJson);
+            post("https://igti-film.herokuapp.com/api/signin", inputJson);
+        }
+        autenticar();
+
     </script>
 </body>
 </html>
