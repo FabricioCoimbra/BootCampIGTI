@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1024, initial-scale=1.0">
+    <title>Testes js</title>
+</head>
+<body>
+    <h1>Abra o console para ver os resultados</h1>
+    <script>
+        const ExecutaFetch = async() => {
+            const response = await fetch('https://jsonplaceholder.typicode.com/todos');
+            console.log("Imprimindo lista de retorno");
+            response.json().then(item =>{ 
+                item = item.filter(item => item.userId === 1 && item.completed)
+                console.log(item);
+            });
+        }
+        //executa somente depois do server retornar os resultados
+        ExecutaFetch();
+
+        let um = 1;
+        let outro = "1";        
+        console.log("um == outro");
+        console.log(um == outro);
+        console.log("um === outro");
+        console.log(um === outro);
+        console.log("um + outro");
+        console.log(um + outro);
+        let x = "1";
+        console.log("x === outro");
+        console.log(x === outro);
+        x = um;
+        console.log("x digievolui para int");
+        console.log("x === outro");
+        console.log(x === outro);
+
+    </script>
+</body>
+</html>
