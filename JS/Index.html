@@ -37,7 +37,7 @@
                 console.log(`Ao somar os Ids dos comentários temos o valor de ${somaComentarios} mas isso não informa nada`);
             });
         }
-        ExecutaFetch();
+        //ExecutaFetch();
 
         let um = 1;
         let outro = "1";        
@@ -54,8 +54,6 @@
         console.log("x digievolui para int");
         console.log("x === outro");
         console.log(x === outro);
-
-
 
         function post(url, body) {
             xmlhttp = new XMLHttpRequest();
@@ -128,8 +126,80 @@
             //post("https://igti-film.herokuapp.com/api/signup", inputJson);
             post("https://igti-film.herokuapp.com/api/signin", inputJson);
         }
-        autenticar();
+        //autenticar();
+        
+        const somarDepositos = async() => {
+            let response = await fetch('https://igti-film.herokuapp.com/api/accounts');
+            response.json().then(item =>{ 
+                console.log("");
+                console.log("Somando Depósitos");
+                console.log("");
+                //console.log(item);
+                let somaBalance = item.map(x => x.balance).reduce((valorAntigo, novoValor) => valorAntigo+novoValor);                
+                console.log(`Ao balance temos o valor de ${somaBalance}`);
+                let ContasPositivas = item.filter(item => item.balance > 100)
+                console.log(`Total de contas com saldo superior a 100 pila = ${ContasPositivas.length}`);
+                ContasPositivas = item.filter(item => item.agencia == 33 && item.balance > 100);
+                console.log(`Total de contas com saldo superior a 100 pila na agência 33 = ${ContasPositivas.length}`);
+                var OrderByDesc = function (a, b) {//do maior para o menor
+                    if (a.balance < b.balance) {
+                        return 1;
+                    }
+                    if (a.balance > b.balance) {
+                        return -1;
+                    }
+                    // a.balance must be equal to b.balance
+                    return 0;
+                } 
 
+                var OrderByAsc = function (a, b) {//do menor para o maior
+                    if (a.balance > b.balance) {
+                        return 1;
+                    }
+                    if (a.balance < b.balance) {
+                        return -1;
+                    }
+                    // a.balance must be equal to b.balance
+                    return 0;
+                } 
+
+                item.sort(OrderByDesc);
+                console.log(`A Agência com que tem a conta com MAIOR saldo é a = ${item[0].agencia}`);
+                console.log(`A Agência com a conta de MENOR saldo é a = ${item[item.length -1].agencia}`);
+                console.log(item[0]);
+
+                var groupBy = function(xs, key) {
+                    return xs.reduce(function(rv, x) {
+                        (rv[x[key]] = rv[x[key]] || []).push(x);
+                        return rv;
+                    }, {});
+                };
+                var AgenciasAgrupadas = groupBy(item, 'agencia');
+                //console.log(AgenciasAgrupadas);
+                //console.log(typeof(AgenciasAgrupadas));
+                var maioresSaldos = 0;
+                for (let [key, value] of Object.entries(AgenciasAgrupadas)) {
+                    let maiorsaldo = item.filter(item => item.agencia == key).sort(OrderByDesc);
+                    console.log(`O cliente com maior saldo na Agencia ${key} é o ${maiorsaldo[0].name} com R$ ${maiorsaldo[0].balance} `);
+                    maioresSaldos += maiorsaldo[0].balance;
+                } 
+                console.log(`A soma dos maiores saldos das agencias é ${maioresSaldos} `);
+
+                let ClienteAg47 = item.filter(item => item.agencia == 47).sort(OrderByAsc);
+                console.log(`O nome do(a) cliente com o menor saldo na agência 47 é: ${ClienteAg47[0].name} `);
+                console.log(`O nome do(a) cliente com o menor saldo na agência 47 é: ${ClienteAg47[1].name} `);
+                console.log(`O nome do(a) cliente com o menor saldo na agência 47 é: ${ClienteAg47[2].name} `);
+                console.log(`um total de  ${ClienteAg47.length} clientes nessa agencia `);                
+                ClienteAg47 = ClienteAg47.filter(item => item.name.includes("Maria"));
+                console.log(`Temos  ${ClienteAg47.length} "Maria" na agencia 47 `);
+
+                var nextId = Math.max.apply(Math, item.map(a =>  a.id));
+                console.log(`O próximo ID disponível é o ${nextId +1}`);
+                
+            });
+
+        }
+        somarDepositos();
     </script>
 </body>
 </html>
